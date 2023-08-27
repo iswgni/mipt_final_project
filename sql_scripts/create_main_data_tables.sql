@@ -8,7 +8,6 @@ create table if not exists DWH_FACT_PASSPORT_BLACKLIST (
 );
 
 
-
 -- Создание таблицы клиентов:
 create table if not exists DWH_DIM_CLIENTS (
 	client_id varchar(32) primary key,
@@ -24,7 +23,6 @@ create table if not exists DWH_DIM_CLIENTS (
 );
 
 
-
 -- Создание таблицы аккаунтов:
 create table if not exists DWH_DIM_ACCOUNTS (
 	account_num varchar(32) primary key,
@@ -36,7 +34,6 @@ create table if not exists DWH_DIM_ACCOUNTS (
 );
 
 
-
 -- Создание таблицы карт:
 create table if not exists DWH_DIM_CARDS (
     card_num varchar(32) primary key,
@@ -45,7 +42,6 @@ create table if not exists DWH_DIM_CARDS (
     update_dt date,
     foreign key (account_num) references DWH_DIM_ACCOUNTS (account_num)
 );
-
 
 
 -- Создание таблицы терминалов:
@@ -75,7 +71,6 @@ create table if not exists DWH_FACT_TRANSACTIONS (
 );
 
 
-
 -- Создание таблицы отчётов:
 create table if not exists REP_FRAUD (
 	event_dt date,
@@ -84,4 +79,23 @@ create table if not exists REP_FRAUD (
 	phone varchar(32),
 	event_type varchar(128),
 	report_dt date default current_timestamp
-)
+);
+
+
+-- Создание стейджинг таблицы для транзакций:
+create table if not exists STG_TRANSACTIONS (
+	transaction_id varchar(32),
+	transaction_date date,
+	amount decimal(10,2),
+	card_num varchar(32),
+	oper_type varchar(32),
+	oper_result varchar(32),
+	terminal varchar(32)
+);
+
+
+-- Создание стейджинг таблицы для транзакций:
+create table if not exists STG_PASSPORT_BLACKLIST (
+	passport varchar(32),
+	date date
+);
