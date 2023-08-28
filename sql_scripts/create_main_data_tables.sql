@@ -46,13 +46,13 @@ create table if not exists DWH_DIM_CARDS (
 
 -- Создание таблицы терминалов:
 create table if not exists DWH_DIM_TERMINALS_HIST (
-	id integer primary key, 
+	id integer primary key autoincrement, 
 	terminal_id varchar(32),
 	terminal_type varchar(10),
 	terminal_city varchar(64),
 	terminal_address varchar(128),
-	effective_from timestamp,
-	effective_from_to timestamp,
+	effective_from datetime default current_timestamp,
+	effective_to datetime default ('2999-12-31 23:59:59'),
 	deleted_flg default 0
 );
 
@@ -79,23 +79,4 @@ create table if not exists REP_FRAUD (
 	phone varchar(32),
 	event_type varchar(128),
 	report_dt date default current_timestamp
-);
-
-
--- Создание стейджинг таблицы для транзакций:
-create table if not exists STG_TRANSACTIONS (
-	transaction_id varchar(32),
-	transaction_date date,
-	amount decimal(10,2),
-	card_num varchar(32),
-	oper_type varchar(32),
-	oper_result varchar(32),
-	terminal varchar(32)
-);
-
-
--- Создание стейджинг таблицы для транзакций:
-create table if not exists STG_PASSPORT_BLACKLIST (
-	passport varchar(32),
-	date date
 );

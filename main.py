@@ -3,6 +3,9 @@ from tabulate import tabulate
 from datetime import datetime
 from py_scripts import run_sql_scripts as rs
 from py_scripts import load_daily_data as ldd
+from numpy import array 
+
+
 
 
 #Код для создания и подключения к БД:
@@ -10,6 +13,19 @@ con = sql.connect('bank_fraud.db')
 cur = con.cursor()
 now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 print(f'\nВремя на момент вызова: {now} \n')
+
+
+# Для просмотра таблиц:
+def showTable(table_name):
+	cur.execute(f'SELECT * FROM {table_name}')
+	columns = list(map(lambda x: x[0], cur.description))
+	rows = array(cur.fetchall())
+	print('\n'+table_name+'\n')
+	print(tabulate(rows, headers = columns, tablefmt ='fancy_grid'))
+
+
+# Для удобства проверки работы программы из консоли. Например 01032021:
+date = input('Введите дату файла: ')
 
 
 # При первом запуске, после создания БД, код ниже создаст таблицы и загрузит данные,
@@ -21,34 +37,36 @@ except:
 	None
 
 
-# Для удобства тестирования из консоли:
-date = input('Введите дату файла: ')
-
-
-# Для загрузки данных по транзакциям. Необходимо вместо date указать дату формирования файла. Например 01032021:
+# Для загрузки данных по транзакциям:
 try:
 	ldd.LoadTransactions(con, date, cur)
 except FileNotFoundError:
-	print('Такого csv/txt файла по транзакциям нет.')
+	print('\nСsv/txt файла на дату '+date+' по транзакциям нет.\n')
+except sql.IntegrityError:
+	print('\nФайл на дату '+date+' уже загружен.\n')
 
 
-# Для загрузки данных по паспортам. Необходимо вместо date указать дату формирования файла. Например 01032021:
+# Для загрузки данных по паспортам:
 try:
 	ldd.LoadBlackPassports(con, date, cur)
 except FileNotFoundError:
-	print('Такого excel файла по заблокированным паспортам нет.')
+	print('\nExcel файла на дату '+date+' по заблокированным паспортам нет.\n')
+
+
+# Для загрузки данных по терминалам:
+try:
+	ldd.LoadTerminals(con, date, cur)
+except FileNotFoundError:
+	print('\nExcel файла на дату '+date+' по терминалам нет.\n')
+
+showTable('DWH_DIM_TERMINALS_HIST')
+showTable('STG_TERMINALS_NEW')
+showTable('STG_TERMINALS_DELETED')
+showTable('STG_TERMINALS_CHANGED')
+showTable('DWH_FACT_PASSPORT_BLACKLIST')
+
+# Для очищения стейджинговых таблиц:
+ldd.DeleteStgTables(cur)
 
 
 
-# Для отладки:
-def showTable(tableName):
-	cur.execute(f'SELECT * From {tableName}') # Через вопрос не прокатит 
-	print('_-'*10)
-	print(tableName)
-	print('_-'*10)
-	for row in cur.fetchall():
-		print(', '.join([str(item) for item in row]))
-	print('_-'*10 + '\n')	
-
-
-# showTable('DWH_FACT_TRANSACTIONS')
