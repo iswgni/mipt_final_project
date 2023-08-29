@@ -60,7 +60,7 @@ except FileNotFoundError:
 
 
 fd.overdue_or_blocked_passports(con, date, cur)
-
+fd.overdue_account(con, date, cur)
 
 showTable('REP_FRAUD')
 # showTable('DWH_FACT_TRANSACTIONS')
