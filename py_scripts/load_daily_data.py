@@ -36,6 +36,7 @@ def LoadTransactions (con, date, cur):
             transaction_id, transaction_date, amount, card_num, oper_type,
             oper_result, terminal from STG_TRANSACTIONS;
 		''')
+	cur.execute('DROP TABLE if exists STG_TRANSACTIONS')
 	con.commit()
 	os.rename(filePath, os.path.join('archive', 'transactions_'+date+'.txt.backup'))
 
@@ -59,6 +60,7 @@ def LoadBlackPassports (con, date, cur):
             from STG_PASSPORT_BLACKLIST
             where passport not in (select passport_num from DWH_FACT_PASSPORT_BLACKLIST) -- Сделано, чтобы избежать дублей паспортов.
 		''')
+	cur.execute('DROP TABLE if exists STG_PASSPORT_BLACKLIST')
 	con.commit()
 	os.rename(filePath, os.path.join('archive', 'passport_blacklist_'+date+'.xlsx.backup'))
 
@@ -166,15 +168,12 @@ def LoadTerminals (con, date, cur):
 			terminal_address
 			from STG_TERMINALS_CHANGED
 		''')
-	con.commit()
-	os.rename(filePath, os.path.join('archive', 'terminals_'+date+'.xlsx.backup'))
-
-
-# Функция для удаления стейджинговых таблиц таблиц:
-def DeleteStgTables(cur):
 	cur.execute('DROP TABLE if exists STG_TERMINALS')
 	cur.execute('DROP TABLE if exists STG_TERMINALS_NEW')
 	cur.execute('DROP TABLE if exists STG_TERMINALS_DELETED')
 	cur.execute('DROP TABLE if exists STG_TERMINALS_CHANGED')
-	cur.execute('DROP TABLE if exists STG_TRANSACTIONS')
-	cur.execute('DROP TABLE if exists STG_PASSPORT_BLACKLIST')
+	con.commit()
+	os.rename(filePath, os.path.join('archive', 'terminals_'+date+'.xlsx.backup'))
+	
+	
+

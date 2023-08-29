@@ -3,6 +3,7 @@ from tabulate import tabulate
 from datetime import datetime
 from py_scripts import run_sql_scripts as rs
 from py_scripts import load_daily_data as ldd
+from py_scripts import fraud_detection as fd
 from numpy import array 
 
 
@@ -42,8 +43,6 @@ try:
 	ldd.LoadTransactions(con, date, cur)
 except FileNotFoundError:
 	print('\nСsv/txt файла на дату '+date+' по транзакциям нет.\n')
-except sql.IntegrityError:
-	print('\nФайл на дату '+date+' уже загружен.\n')
 
 
 # Для загрузки данных по паспортам:
@@ -59,14 +58,14 @@ try:
 except FileNotFoundError:
 	print('\nExcel файла на дату '+date+' по терминалам нет.\n')
 
-showTable('DWH_DIM_TERMINALS_HIST')
-showTable('STG_TERMINALS_NEW')
-showTable('STG_TERMINALS_DELETED')
-showTable('STG_TERMINALS_CHANGED')
-showTable('DWH_FACT_PASSPORT_BLACKLIST')
 
-# Для очищения стейджинговых таблиц:
-ldd.DeleteStgTables(cur)
+fd.overdue_or_blocked_passports(con, date, cur)
 
+
+showTable('REP_FRAUD')
+# showTable('DWH_FACT_TRANSACTIONS')
+# showTable('STG_TERMINALS_DELETED')
+# showTable('STG_TERMINALS_CHANGED')
+# showTable('DWH_FACT_PASSPORT_BLACKLIST')
 
 
