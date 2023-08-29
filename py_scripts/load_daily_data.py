@@ -38,7 +38,7 @@ def LoadTransactions (con, date, cur):
 		''')
 	cur.execute('DROP TABLE if exists STG_TRANSACTIONS')
 	con.commit()
-	os.rename(filePath, os.path.join('archive', 'transactions_'+date+'.txt.backup'))
+	#os.rename(filePath, os.path.join('archive', 'transactions_'+date+'.txt.backup'))
 
 
 # Функция для загрузки данных по паспортам в STG таблицу, а затем в FACT таблицу. После загрузки файл перемещается в archive:
@@ -62,7 +62,7 @@ def LoadBlackPassports (con, date, cur):
 		''')
 	cur.execute('DROP TABLE if exists STG_PASSPORT_BLACKLIST')
 	con.commit()
-	os.rename(filePath, os.path.join('archive', 'passport_blacklist_'+date+'.xlsx.backup'))
+	#os.rename(filePath, os.path.join('archive', 'passport_blacklist_'+date+'.xlsx.backup'))
 
 
 # Функция для загрузки данных по терминалам в STG таблицы, выделения инкрементов, а затем загрузки в HIST таблицу. После загрузки файл перемещается в archive:
@@ -173,7 +173,7 @@ def LoadTerminals (con, date, cur):
 	cur.execute('DROP TABLE if exists STG_TERMINALS_DELETED')
 	cur.execute('DROP TABLE if exists STG_TERMINALS_CHANGED')
 	con.commit()
-	os.rename(filePath, os.path.join('archive', 'terminals_'+date+'.xlsx.backup'))
+	#os.rename(filePath, os.path.join('archive', 'terminals_'+date+'.xlsx.backup'))
 	
 	
 

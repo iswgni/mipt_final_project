@@ -61,8 +61,10 @@ except FileNotFoundError:
 
 fd.overdue_or_blocked_passports(con, date, cur)
 fd.overdue_account(con, date, cur)
+fd.different_city_in_hour(con, date, cur)
 
-showTable('REP_FRAUD')
+
+showTable('STG_DIF_CITY')
 # showTable('DWH_FACT_TRANSACTIONS')
 # showTable('STG_TERMINALS_DELETED')
 # showTable('STG_TERMINALS_CHANGED')
